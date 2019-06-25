@@ -13,10 +13,10 @@
     "sqlite3": "^4.0.4"
   },
   "devDependencies": {
-    "nodeman": "^1.1.2"
+    "nodemon": "^1.1.2"
   },
   "scripts": {
-    "server": "nodemon"
+    "server": "nodemon index.js"
   },
   "repository": {
     "type": "git",
