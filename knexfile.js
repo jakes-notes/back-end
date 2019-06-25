@@ -15,8 +15,5 @@ module.exports = {
       directory: './data/migrations',
       tableName: 'dbmigrations',
     },
-    seeds: { 
-      directory: './database/seeds' 
-    },
   },
 };

@@ -168,3 +168,5 @@ server.delete("/api/notes/delete/:id", (req, res) => {
       })
       .catch(err => json(err));
   });
+
+  module.exports = server;
