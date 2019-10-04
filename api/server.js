@@ -83,90 +83,90 @@ server.delete("/api/notes/delete/:id", (req, res) => {
       });
   });
 
-  function generateToken(user) {
-    const payload = {
-      subject: user.id,
-      username: user.username,
-    };
+//   function generateToken(user) {
+//     const payload = {
+//       subject: user.id,
+//       username: user.username,
+//     };
   
-    const secret = process.env.JWT_SECRET;
-    const options = {
-      expiresIn: '60m', //time changed here before another login attempt is needed
-    };
+//     const secret = process.env.JWT_SECRET;
+//     const options = {
+//       expiresIn: '60m', //time changed here before another login attempt is needed
+//     };
   
-    return jwt.sign(payload, secret, options);
-  }
+//     return jwt.sign(payload, secret, options);
+//   }
 
-  // LOGIN
+//   // LOGIN
   
-  server.post('/api/notes/login', (req, res) => {
-    const creds = req.body;
+//   server.post('/api/notes/login', (req, res) => {
+//     const creds = req.body;
   
-    db('users')
-      .where({ username: creds.username })
-      .first()
-      .then(user => {
-        if (user && bcrypt.compareSync(creds.password, user.password)) {
-          const token = generateToken(user);
-          res.status(200).json({ message: 'Welcome!', token });
-        } else {
-          res.status(401).json({ message: 'Get Out!!' });
-        }
-      })
-      .catch(err => res.json(err));
-  });
+//     db('users')
+//       .where({ username: creds.username })
+//       .first()
+//       .then(user => {
+//         if (user && bcrypt.compareSync(creds.password, user.password)) {
+//           const token = generateToken(user);
+//           res.status(200).json({ message: 'Welcome!', token });
+//         } else {
+//           res.status(401).json({ message: 'Get Out!!' });
+//         }
+//       })
+//       .catch(err => res.json(err));
+//   });
   
-  function protected(req, res, next) {
-    const token = req.headers.authorization;
+//   function protected(req, res, next) {
+//     const token = req.headers.authorization;
   
-    if (token) { // is valid
-      jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-        if (err) { // is invalid
-          res.status(401).json({ message: 'invalid token' });
-        } else { // token is good
-          req.decodedToken = decodedToken;
-          next();
-        }
-      });
-    } else { //bounced
-      res.status(401).json({ message: 'no token provided' });
-    }
-  }
+//     if (token) { // is valid
+//       jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+//         if (err) { // is invalid
+//           res.status(401).json({ message: 'invalid token' });
+//         } else { // token is good
+//           req.decodedToken = decodedToken;
+//           next();
+//         }
+//       });
+//     } else { //bounced
+//       res.status(401).json({ message: 'no token provided' });
+//     }
+//   }
   
-  //protect this route! Authenticate users only!
-  server.get('/api/notes/users', protected, checkRole('sales'), (req, res) => {
-    db('users')
-      .select('id', 'username', 'password')
-      .then(users => {
-        res.json(users);
-      })
-      .catch(err => res.send(err));
-  });
+//   //protect this route! Authenticate users only!
+//   server.get('/api/notes/users', protected, checkRole('sales'), (req, res) => {
+//     db('users')
+//       .select('id', 'username', 'password')
+//       .then(users => {
+//         res.json(users);
+//       })
+//       .catch(err => res.send(err));
+//   });
   
 
   
-  function checkRole(role) {
-    return function(req, res, next) {
-      if (req.decodedToken && req.decodedToken.roles.includes(role)) {
-        next();
-      } else {
-        res.status(403).json({ message: 'you have no access to this resource' });
-      }
-    };
-  }
+//   function checkRole(role) {
+//     return function(req, res, next) {
+//       if (req.decodedToken && req.decodedToken.roles.includes(role)) {
+//         next();
+//       } else {
+//         res.status(403).json({ message: 'you have no access to this resource' });
+//       }
+//     };
+//   }
   
-// REGISTER
+// // REGISTER
 
-  server.post('/api/notes/register', (req, res) => {
-    const creds = req.body;
-    const hash = bcrypt.hashSync(creds.password, 4); 
-    creds.password = hash; 
-    db('users')
-      .insert(creds)
-      .then(ids => {
-        res.status(201).json(ids);
-      })
-      .catch(err => json(err));
-  });
+//   server.post('/api/notes/register', (req, res) => {
+//     const creds = req.body;
+//     const hash = bcrypt.hashSync(creds.password, 4); 
+//     creds.password = hash; 
+//     db('users')
+//       .insert(creds)
+//       .then(ids => {
+//         res.status(201).json(ids);
+//       })
+//       .catch(err => json(err));
+//   });
 
   module.exports = server;
